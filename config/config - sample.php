@@ -10,6 +10,7 @@ $dbHost='localhost';
 $dbUser='user';
 $dbPass='password';
 $dbDatabase='vbulletin';
+$dbPrefix='';
 
 //$outDir='C:\wamp64\www\vbulletin\manual\user\pages\14.admin_control_panel';
 $outDir="./output";
