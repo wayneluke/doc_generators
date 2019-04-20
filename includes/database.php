@@ -21,8 +21,13 @@ class Database extends PDO
      * @param string $password Database Password (optional)
      * @param array $options An array of options sent to PDO.
      */
-    public function __construct($host, $dbname, $username = NULL, $password = NULL, $options = [])
+
+    private $dbPrefix;
+
+    public function __construct($host, $dbname, $username = NULL, $password = NULL, $dbPrefix, $options = [])
     {
+        
+        $this->dbPrefix = $dbPrefix;
         $default_options = [
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES => false,
@@ -44,6 +49,7 @@ class Database extends PDO
      */
     public function run_query($sql, $args = NULL)
     {
+        $sql = str_ireplace('{prefix}',$this->dbPrefix, $sql);
         if (!$args)
         {
              return $this->query($sql);
