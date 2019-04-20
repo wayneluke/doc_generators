@@ -39,7 +39,7 @@ class QueryDefs {
             'stylevars'       => "SELECT p1.text AS 'title', p2.text AS 'description', s.* FROM {prefix}stylevardfn AS s
                                   LEFT JOIN {prefix}phrase AS p1 ON (p1.varname LIKE CONCAT('stylevar_', s.stylevarid, '_name')) 
                                   LEFT JOIN {prefix}phrase AS p2 ON (p2.varname LIKE CONCAT('stylevar_', s.stylevarid, '_description')) 
-                                  WHERE {prefix}stylevargroup=? ORDER BY s.varname ASC", 
+                                  WHERE stylevargroup=? ORDER BY s.stylevarid ASC", 
             'default_value'   => "SELECT value FROM {prefix}stylevar WHERE stylevarid=? AND styleid=-1",
     ];
 

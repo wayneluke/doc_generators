@@ -15,29 +15,24 @@ $templateTokens=['~title~','~title_slug~','~date~','~group~','~version~','~conte
 $contentTokens=['~title~','~image~','~description~','~help~','~additionalinfo~','~varname~','~type~','~defaultvalue~'];
 $imageTokens=['~imageurl~','~caption~'];
 
-// Setup Necessary Queries.
-$query =[
-    'version'   => "select value from {prefix}setting where varname='templateversion'",
-    'groups'    => "select distinct(stylevargroup) from {prefix}stylevardfn ORDER BY stylevargroup ASC;",
-    'stylevars' => "select p1.text as 'title', p2.text as 'description', s.* from {prefix}stylevardfn AS s
-        LEFT JOIN {prefix}phrase AS p1 ON (p1.varname LIKE CONCAT('stylevar_', s.stylevarid, '_name')) 
-        LEFT JOIN {prefix}phrase AS p2 ON (p2.varname LIKE CONCAT('stylevar_', s.stylevarid, '_description')) 
-        where stylevargroup=? ORDER BY s.stylevargroup ASC", 
-    'default_value'  => "select value from {prefix}stylevar where stylevarid=? and styleid=-1",
-];
-
 $dbConnect = new Database($dbHost,$dbName,$dbUser,$dbPass,$dbPrefix);
+
+$queries = new QueryDefs();
+
+$querylist = $queries->getQueries('stylevars');
 
 if (!empty($dbConnect)) {
     echo "Database Connection Successful\n\r";
+} else {
+    die ('unable to connect');
 }
 
+
 $clean = true;
-$version = $dbConnect->run_query($query['version']);
-$curVersion = $version->fetchColumn();
+$version = $queries->getVersion($dbConnect);
 $now=date('n/d/Y h:ia');
 
-$groups = $dbConnect->run_query($query['groups']);
+$groups = $dbConnect->run_query($querylist['groups']);
 
 $itemReplace=[];
 $currentItem='';
@@ -46,7 +41,7 @@ $outDir = $outDir . $separator . '10.customizing_vbulletin'. $separator .'04.sty
 $pageCounter=0;
 foreach ($groups as $group) {
     echo $group['stylevargroup'] . "\n\r";
-    $stylevars = $dbConnect->run_query($query['stylevars'],[$group['stylevargroup']]);
+    $stylevars = $dbConnect->run_query($querylist['stylevars'],[$group['stylevargroup']]);
     $content='';
     foreach ($stylevars as $stylevar) {
         
@@ -54,7 +49,7 @@ foreach ($groups as $group) {
         if (!isset($stylevar['title']) or $stylevar['title'] == null or $stylevar['title'] === '') {
             $stylevar['title'] = $stylevar['stylevarid'];
         }        
-        $default = $dbConnect->fetch_query($query['default_value'],[$stylevar['stylevarid']]);
+        $default = $dbConnect->fetch_query($querylist['default_value'],[$stylevar['stylevarid']]);
         $values = unserialize($default['value']);
         foreach ($values as $key => $value) {
             $inherit=0;
@@ -85,7 +80,7 @@ foreach ($groups as $group) {
     }
     $groupDir = $outDir . $separator . ++$pageCounter . '.' . $group['stylevargroup'];
     createDirectory($groupDir);
-    $templateReplace=[$group['stylevargroup'], slugify($group['stylevargroup']), $now, $group['stylevargroup'], $curVersion, $content];
+    $templateReplace=[$group['stylevargroup'], slugify($group['stylevargroup']), $now, $group['stylevargroup'], $version, $content];
 
     $stylevarPage = new Template('stylevarPage.inc');
     $page=$stylevarPage->parse($templateTokens,$templateReplace);
