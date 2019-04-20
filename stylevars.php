@@ -1,6 +1,7 @@
 <?php
 require_once('./config/config.php');
 require_once('./includes/database.php');
+require_once('./includes/querydef.php');
 require_once('./includes/template.php');
 require_once('./includes/functions.php');
 
@@ -16,16 +17,16 @@ $imageTokens=['~imageurl~','~caption~'];
 
 // Setup Necessary Queries.
 $query =[
-    'version'   => "select value from setting where varname='templateversion'",
-    'groups'    => "select distinct(stylevargroup) from stylevardfn ORDER BY stylevargroup ASC;",
-    'stylevars' => "select p1.text as 'title', p2.text as 'description', s.* from stylevardfn AS s
-        LEFT JOIN phrase AS p1 ON (p1.varname LIKE CONCAT('stylevar_', s.stylevarid, '_name')) 
-        LEFT JOIN phrase AS p2 ON (p2.varname LIKE CONCAT('stylevar_', s.stylevarid, '_description')) 
+    'version'   => "select value from {prefix}setting where varname='templateversion'",
+    'groups'    => "select distinct(stylevargroup) from {prefix}stylevardfn ORDER BY stylevargroup ASC;",
+    'stylevars' => "select p1.text as 'title', p2.text as 'description', s.* from {prefix}stylevardfn AS s
+        LEFT JOIN {prefix}phrase AS p1 ON (p1.varname LIKE CONCAT('stylevar_', s.stylevarid, '_name')) 
+        LEFT JOIN {prefix}phrase AS p2 ON (p2.varname LIKE CONCAT('stylevar_', s.stylevarid, '_description')) 
         where stylevargroup=? ORDER BY s.stylevargroup ASC", 
-    'default_value'  => "select value from stylevar where stylevarid=? and styleid=-1",
+    'default_value'  => "select value from {prefix}stylevar where stylevarid=? and styleid=-1",
 ];
 
-$dbConnect = new Database($dbHost,$dbName,$dbUser,$dbPass);
+$dbConnect = new Database($dbHost,$dbName,$dbUser,$dbPass,$dbPrefix);
 
 if (!empty($dbConnect)) {
     echo "Database Connection Successful\n\r";
@@ -49,19 +50,25 @@ foreach ($groups as $group) {
     $content='';
     foreach ($stylevars as $stylevar) {
         
-        $value_list="\n";
+        $value_list="";
         if (!isset($stylevar['title']) or $stylevar['title'] == null or $stylevar['title'] === '') {
             $stylevar['title'] = $stylevar['stylevarid'];
         }        
         $default = $dbConnect->fetch_query($query['default_value'],[$stylevar['stylevarid']]);
         $values = unserialize($default['value']);
         foreach ($values as $key => $value) {
+            $inherit=0;
             if (strpos($key,'stylevar_') === 0) {
-                continue;
+                $key = str_replace('stylevar_','',$key);
             }
-            $value_list .= "\t- " . $key . ": " . $value . "\n";
+            if (strpos($key, 'inherit_')===0) {
+                $value_list .= "  ";
+            }
+            if (!empty($value) || $inherit) {
+                $value_list .= "- " . $key . ": " . $value . "\n";
+            }
         }
-        $value_list .= "\n\r";
+        $value_list = "\n" . trim($value_list) . "\n";
         echo "\t". $stylevar['title'] ."\n\r";
         $itemReplace=[
             $stylevar['title'],          // title
