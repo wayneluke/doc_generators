@@ -19,7 +19,7 @@ $dbConnect = new Database($dbHost,$dbName,$dbUser,$dbPass,$dbPrefix);
 
 $queries = new QueryDefs();
 
-$querylist = $queries->getQueries('stylevars');
+$stylevarQueries = $queries->getQueries('stylevars');
 
 if (!empty($dbConnect)) {
     echo "Database Connection Successful\n\r";
@@ -32,7 +32,7 @@ $clean = true;
 $version = $queries->getVersion($dbConnect);
 $now=date('n/d/Y h:ia');
 
-$groups = $dbConnect->run_query($querylist['groups']);
+$groups = $dbConnect->run_query($stylevarQueries['groups']);
 
 $itemReplace=[];
 $currentItem='';
@@ -41,7 +41,7 @@ $outDir = $outDir . $separator . '10.customizing_vbulletin'. $separator .'04.sty
 $pageCounter=0;
 foreach ($groups as $group) {
     echo $group['stylevargroup'] . "\n\r";
-    $stylevars = $dbConnect->run_query($querylist['stylevars'],[$group['stylevargroup']]);
+    $stylevars = $dbConnect->run_query($stylevarQueries['stylevars'],[$group['stylevargroup']]);
     $content='';
     foreach ($stylevars as $stylevar) {
         
@@ -49,7 +49,7 @@ foreach ($groups as $group) {
         if (!isset($stylevar['title']) or $stylevar['title'] == null or $stylevar['title'] === '') {
             $stylevar['title'] = $stylevar['stylevarid'];
         }        
-        $default = $dbConnect->fetch_query($querylist['default_value'],[$stylevar['stylevarid']]);
+        $default = $dbConnect->fetch_query($stylevarQueries['default_value'],[$stylevar['stylevarid']]);
         $values = unserialize($default['value']);
         foreach ($values as $key => $value) {
             $inherit=0;
