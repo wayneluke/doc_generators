@@ -36,8 +36,6 @@ $now=date('n/d/Y h:ia');
 $categories = $dbConnect->run_query($moduleQueries['categories']);
 
 foreach ($categories as $category) {
-    //Skip Abstract Category for now.
-    if ($category['category'] === 'Abstract') {continue;}
 
     echo '# ' . $category['category'] . PHP_EOL;
     $modules = $dbConnect->run_query($moduleQueries['widget'],[$category['category']]);
