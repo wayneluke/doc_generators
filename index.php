@@ -9,12 +9,12 @@ function doMenu() {
     "\t2 - Style Variables".PHP_EOL.
     "\t3 - Pages".PHP_EOL.
     "\t4 - Site Builder Modules".PHP_EOL.PHP_EOL.
-    "Tools:".PHP_EOL.
-    "\tA - Wikify".PHP_EOL.
-    "\tB - Frontmatter".PHP_EOL.
-    "\tC - File List".PHP_EOL.
-    "\tD - Image List".PHP_EOL.
-    "\tQ - Quit".PHP_EOL;
+    //"Tools:".PHP_EOL.
+    //"\tA - Wikify".PHP_EOL.
+    //"\tB - Frontmatter".PHP_EOL.
+    //"\tC - File List".PHP_EOL.
+    //"\tD - Image List".PHP_EOL.
+    //"\tQ - Quit".PHP_EOL;
     
     echo $menu;
     echo PHP_EOL.'Selection ->';
