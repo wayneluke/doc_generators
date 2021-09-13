@@ -1,6 +1,6 @@
 <?php
 
-// Miscellaneous Functions
+// Filesystem functions. 
 
 function deleteDirectory($dirName) 
 {
@@ -31,21 +31,6 @@ function createDirectory($dirName)
     return true;
 }
 
-function slugify($string='')
-{
-    $string=strip_tags($string);
-    $string=preg_replace('/[^A-Za-z0-9-]+/', ' ', $string);
-    $string=trim($string);
-    $string=preg_replace('/[^A-Za-z0-9-]+/','_', $string); 
-    $string=strtolower($string);
-    return $string;
-    
-}
-
-function unslugify($string='') {
-    return ucwords(str_replace('_',' ',$string));
-}
-
 function writeFile (string $outDir, string $fileName, string $fileTxt) {
     if (!is_dir($outDir)) {
         // dir doesn't exist, make it
@@ -53,4 +38,21 @@ function writeFile (string $outDir, string $fileName, string $fileTxt) {
       }
       echo 'Creating ' . $fileName . ' file. ' . PHP_EOL;
       file_put_contents($outDir.'/'.$fileName,$fileTxt);  
+}
+
+// SLUG functions
+
+function slugify($string='')
+{
+    $string=strip_tags($string);
+    $string=preg_replace('/[^A-Za-z0-9-]+/', ' ', $string);
+    $string=trim($string);
+    $string=preg_replace('/[^A-Za-z0-9-]+/','-', $string); 
+    $string=strtolower($string);
+    return $string;
+    
+}
+
+function unslugify($string='') {
+    return ucwords(str_replace('-',' ',$string));
 }
