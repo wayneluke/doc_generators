@@ -1,5 +1,5 @@
 <?php
-require_once('./config/config.php');
+require_once('./includes/system.php');
 require_once('./includes/database.php');
 require_once('./includes/template.php');
 require_once('./includes/functions.php');
@@ -30,7 +30,9 @@ $query =[
         WHERE s.grouptitle=? ORDER BY s.displayorder",
 ];
 
-$dbConnect = new Database($dbHost,$dbName,$dbUser,$dbPass);
+$sys = new System("./config/settings.ini", __DIR__);
+
+$dbConnect = new Database("./config/settings.ini");
 
 if (!empty($dbConnect)) {
     echo "Database Connection Successful\n\r";
@@ -45,7 +47,7 @@ $groups = $dbConnect->run_query($query['groups']);
 
 $itemReplace=[];
 $currentItem='';
-$outDir = $outDir . $separator . '02.settings' . $separator . '01.options';
+$outDir = $sys->outputDirectory . $separator . 'settings' . $separator . 'options';
 foreach ($groups as $group) {
     if ($group['displayorder']==0){
         continue;
@@ -56,14 +58,14 @@ foreach ($groups as $group) {
     foreach ($settings as $setting) {
         echo "\t\t". $setting['title'] ."\n\r";
         $itemReplace=[$setting['title'],'',$setting['description'],'','',$setting['varname'],$setting['datatype'],htmlentities($setting['defaultvalue'])];
-        $currentItem = new Template('settingItem.inc');
+        $currentItem = new Template('setting');
         $content.=$currentItem->parse($contentTokens,$itemReplace);
     }
     $groupDir = $outDir . $separator . $group['displayorder'] . '.' . $group['grouptitle'];
     createDirectory($groupDir);
     $templateReplace=[$group['title'], slugify($group['title']), $now, $group['grouptitle'], $curVersion, $content];
 
-    $settingPage = new Template('settingPage.inc');
+    $settingPage = new Template('setting.page');
     $page=$settingPage->parse($templateTokens,$templateReplace);
     file_put_contents($groupDir . $separator . 'article.md', $page);
 }
