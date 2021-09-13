@@ -24,18 +24,16 @@ class Database extends PDO
 
     private $dbPrefix;
 
-    public function __construct($host, $dbname, $username = NULL, $password = NULL, $dbPrefix, $options = [])
+    public function __construct($file)
     {
-        
-        $this->dbPrefix = $dbPrefix;
-        $default_options = [
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        ];
-        $options = array_replace($default_options, $options);
-        $dsn = 'mysql:host='.$host.';dbname='.$dbname;
-        parent::__construct($dsn, $username, $password, $options);
+        if (!$settings = parse_ini_file($file, TRUE)) throw new exception('Unable to open ' . $file . '.');
+       
+        $dns = $settings['database']['driver'] .
+        ':host=' . $settings['database']['host'] .
+        ((!empty($settings['database']['port'])) ? (';port=' . $settings['database']['port']) : '') .
+        ';dbname=' . $settings['database']['schema'];
+       
+        parent::__construct($dns, $settings['database']['username'], $settings['database']['password']);
     }
 
     /**

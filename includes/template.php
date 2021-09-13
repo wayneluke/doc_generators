@@ -6,10 +6,11 @@ class Template {
     private $template;
 
     public function __construct ($file) {
-        if (!file_exists($this->dir.$file)) {
-            throw new Exception("Template doesn't exist: " .$this->dir.$file);
+        $temp = $this->dir . $file . ".md";
+        if (!file_exists($temp)) {
+            exit("Template (" . $temp . ") doesn't exist.");
         } else {            
-            $this->template=$this->dir.$file;
+            $this->template=$temp;
         }
     }
 
