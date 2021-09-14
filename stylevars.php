@@ -89,11 +89,20 @@ foreach ($groups as $group) {
     }
     $groupDir = $outDir . $separator . $group['stylevargroup'];
     createDirectory($groupDir);
+    
     $pageCounter +=10;
-    $templateReplace=[$group['stylevargroup'], slugify($group['stylevargroup']), $now, $group['stylevargroup'], $version, $content, $pageCounter];
+    if ($group['stylevargroup']==='Global') { 
+        $weight = 1; 
+    } elseif ($group['stylevargroup']==='GlobalPalette') {
+        $weight = 2; 
+    } else { 
+        $weight = $pageCounter;
+    }
+    $templateReplace=[$group['stylevargroup'], slugify($group['stylevargroup']), $now, $group['stylevargroup'], $version, $content, $weight];
 
     $stylevarPage = new Template('stylevar.page');
     $page=$stylevarPage->parse($templateTokens,$templateReplace);
     file_put_contents($groupDir . $separator . 'index.md', $page);
+
 }
 
