@@ -100,7 +100,7 @@ foreach ($groups as $group) {
     }
     $templateReplace=[$group['stylevargroup'], slugify($group['stylevargroup']), $now, $group['stylevargroup'], $version, $content, $weight];
 
-    $stylevarPage = new Template('stylevar.page');
+    $stylevarPage = new Template('page');
     $page=$stylevarPage->parse($templateTokens,$templateReplace);
     file_put_contents($groupDir . $separator . 'index.md', $page);
 

@@ -72,7 +72,7 @@ foreach ($groups as $group) {
     createDirectory($groupDir);
     $templateReplace=[$group['title'], slugify($group['title']), $now, $group['grouptitle'], $curVersion, $content, $group['displayorder']];
 
-    $settingPage = new Template('setting.page');
+    $settingPage = new Template('page');
     $page=$settingPage->parse($templateTokens,$templateReplace);
     file_put_contents($groupDir . $separator . 'index.md', $page);
 }
