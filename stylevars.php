@@ -24,6 +24,7 @@ if (!empty($dbConnect)) {
 $separator=DIRECTORY_SEPARATOR;
 $outDir = $sys->outputDirectory . $separator . 'stylevars' . $separator . 'stylevar_reference';
 
+// Setup Variables for page generation.
 
 $templateTokens=['~title~','~title_slug~','~date~','~group~','~version~','~content~','~weight~'];
 $contentTokens=['~title~','~image~','~description~','~help~','~additionalinfo~','~varname~','~type~','~defaultvalue~'];
@@ -31,15 +32,15 @@ $imageTokens=['~imageurl~','~caption~'];
 
 $queries = new QueryDefs();
 
-$stylevarQueries = $queries->getQueries('stylevars');
-
-//--------------------------------------------
+$Queries = $queries->getQueries('stylevars');
 
 $clean = true;
 $version = $queries->getVersion($dbConnect);
 $now=date('Y-m-d h:ia');
 
-$groups = $dbConnect->run_query($stylevarQueries['groups']);
+//--------------------------------------------
+
+$groups = $dbConnect->run_query($Queries['groups']);
 
 $itemReplace=[];
 $currentItem='';
@@ -48,7 +49,7 @@ $currentItem='';
 $pageCounter=10;
 foreach ($groups as $group) {
     echo $group['stylevargroup'] . "\n\r";
-    $stylevars = $dbConnect->run_query($stylevarQueries['stylevars'],[$group['stylevargroup']]);
+    $stylevars = $dbConnect->run_query($Queries['stylevars'],[$group['stylevargroup']]);
     $content='';
     foreach ($stylevars as $stylevar) {
         
@@ -56,7 +57,7 @@ foreach ($groups as $group) {
         if (!isset($stylevar['title']) or $stylevar['title'] == null or $stylevar['title'] === '') {
             $stylevar['title'] = $stylevar['stylevarid'];
         }        
-        $default = $dbConnect->fetch_query($stylevarQueries['default_value'],[$stylevar['stylevarid']]);
+        $default = $dbConnect->fetch_query($Queries['default_value'],[$stylevar['stylevarid']]);
         $values = unserialize($default['value']);
         foreach ($values as $key => $value) {
             $inherit=0;
