@@ -1,21 +1,28 @@
 <?php
-require_once('./config/config.php');
+// This script writes out markdown files for each stylvar group. 
+
+
+// Only allow this to be run from the CLI.
+if (PHP_SAPI != 'cli') { die ('Not Allowed'); } 
+
+
+require_once('./includes/system.php');
 require_once('./includes/database.php');
 require_once('./includes/querydef.php');
 require_once('./includes/template.php');
 require_once('./includes/functions.php');
 
-if (PHP_SAPI != 'cli') 
-{ 
-   die ('Not Allowed');
+// Setup System
+$sys = new System("./config/settings.ini", __DIR__);
+$dbConnect = new Database("./config/settings.ini");
+if (!empty($dbConnect)) {
+    echo "Database Connection Successful\n\r";
 } 
 
-// Misc. Settings. These probably do not need to be changed.
-$templateTokens=['~title~','~title_slug~','~date~','~group~','~version~','~content~'];
+$separator=DIRECTORY_SEPARATOR;
+$templateTokens=['~title~','~title_slug~','~date~','~group~','~version~','~content~','~weight~'];
 $contentTokens=['~title~','~image~','~description~','~help~','~additionalinfo~','~varname~','~type~','~defaultvalue~'];
 $imageTokens=['~imageurl~','~caption~'];
-
-$dbConnect = new Database($dbHost,$dbName,$dbUser,$dbPass,$dbPrefix);
 
 $queries = new QueryDefs();
 
@@ -30,15 +37,15 @@ if (!empty($dbConnect)) {
 
 $clean = true;
 $version = $queries->getVersion($dbConnect);
-$now=date('n/d/Y h:ia');
+$now=date('Y-m-d h:ia');
 
 $groups = $dbConnect->run_query($stylevarQueries['groups']);
 
 $itemReplace=[];
 $currentItem='';
 
-$outDir = $outDir . $separator . '10.customizing_vbulletin'. $separator .'04.styles'. $separator .'20.stylevars'. $separator .'01.stylevar_reference';
-$pageCounter=0;
+$outDir = $sys->outputDirectory . $separator . 'stylevars' . $separator . 'stylevar_reference';
+$pageCounter=10;
 foreach ($groups as $group) {
     echo $group['stylevargroup'] . "\n\r";
     $stylevars = $dbConnect->run_query($stylevarQueries['stylevars'],[$group['stylevargroup']]);
@@ -60,7 +67,9 @@ foreach ($groups as $group) {
                 $value_list .= "  ";
             }
             if (!empty($value) || $inherit) {
-                $value_list .= "- " . $key . ": " . $value . "\n";
+                $value_list .= "- " . $key . ": " . $value; 
+                // add color swatch stuff here.
+                $value_list .= "\n";
             }
         }
         $value_list = "\n" . trim($value_list) . "\n";
@@ -75,15 +84,16 @@ foreach ($groups as $group) {
             $stylevar['datatype'],       // type
             $value_list,                 // default values    
         ];
-        $currentItem = new Template('stylevarItem.inc');
+        $currentItem = new Template('stylevar');
         $content.=$currentItem->parse($contentTokens,$itemReplace) . "\n";
     }
-    $groupDir = $outDir . $separator . ++$pageCounter . '.' . $group['stylevargroup'];
+    $groupDir = $outDir . $separator . $group['stylevargroup'];
     createDirectory($groupDir);
-    $templateReplace=[$group['stylevargroup'], slugify($group['stylevargroup']), $now, $group['stylevargroup'], $version, $content];
+    $pageCounter +=10;
+    $templateReplace=[$group['stylevargroup'], slugify($group['stylevargroup']), $now, $group['stylevargroup'], $version, $content, $pageCounter];
 
-    $stylevarPage = new Template('stylevarPage.inc');
+    $stylevarPage = new Template('stylevar.page');
     $page=$stylevarPage->parse($templateTokens,$templateReplace);
-    file_put_contents($groupDir . $separator . 'article.md', $page);
+    file_put_contents($groupDir . $separator . 'index.md', $page);
 }
 
