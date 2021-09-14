@@ -42,7 +42,7 @@ $query =[
         WHERE s.grouptitle=? ORDER BY s.displayorder",
 ];
 
-
+// ------------------------------------
 
 $clean = true;
 $version = $dbConnect->run_query($query['version']);
@@ -53,7 +53,7 @@ $groups = $dbConnect->run_query($query['groups']);
 
 $itemReplace=[];
 $currentItem='';
-$outDir = $sys->outputDirectory . $separator . 'settings' . $separator . 'options';
+
 foreach ($groups as $group) {
     if ($group['displayorder']==0){
         continue;

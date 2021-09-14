@@ -32,7 +32,7 @@ $queries = new QueryDefs();
 
 $stylevarQueries = $queries->getQueries('stylevars');
 
-
+//--------------------------------------------
 
 $clean = true;
 $version = $queries->getVersion($dbConnect);
