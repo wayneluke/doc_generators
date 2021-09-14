@@ -21,10 +21,11 @@ if (!empty($dbConnect)) {
     die ('unable to connect');
 }
 
+$separator=DIRECTORY_SEPARATOR;
 $outDir = $sys->outputDirectory . $separator . 'settings' . $separator . 'options';
 
 // Setup Variables for page generation.
-$separator=DIRECTORY_SEPARATOR;
+
 $templateTokens=['~title~','~title_slug~','~date~','~group~','~version~','~content~','~weight~'];
 $contentTokens=['~title~','~image~','~description~','~help~','~additionalinfo~','~varname~','~type~','~defaultvalue~'];
 $imageTokens=['~imageurl~','~caption~'];
