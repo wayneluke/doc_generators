@@ -43,7 +43,7 @@ $query =[
 $clean = true;
 $version = $dbConnect->run_query($query['version']);
 $curVersion = $version->fetchColumn();
-$now=date('n/d/Y h:ia');
+$now=date('Y-m-d h:ia');
 
 $groups = $dbConnect->run_query($query['groups']);
 
@@ -58,7 +58,7 @@ foreach ($groups as $group) {
     $settings = $dbConnect->run_query($query['settings'],[$group['grouptitle']]);
     $content='';
     foreach ($settings as $setting) {
-        echo "\t\t". $setting['title'] ."\n\r";
+        echo "\t". $setting['title'] ."\n\r";
         $itemReplace=[$setting['title'],'',$setting['description'],'','',$setting['varname'],$setting['datatype'],htmlentities($setting['defaultvalue'])];
         $currentItem = new Template('setting');
         $content.=$currentItem->parse($contentTokens,$itemReplace);

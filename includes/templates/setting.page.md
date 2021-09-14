@@ -1,9 +1,14 @@
 ---
-title: ~title~
-slug: ~title_slug~
-version: ~version~
-date: ~date~
-weight: ~weight~
+Title: "~title~"
+Slug: ~title_slug~
+Version: "~version~"
+Date: "~date~"
+Weight: ~weight~
 ---
 
 ~content~
+
+<hr>
+<small>
+updated: ~date~ | Version: ~version~
+</small>
