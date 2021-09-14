@@ -17,7 +17,11 @@ $sys = new System("./config/settings.ini", __DIR__);
 $dbConnect = new Database("./config/settings.ini");
 if (!empty($dbConnect)) {
     echo "Database Connection Successful\n\r";
-} 
+} else {
+    die ('unable to connect');
+}
+
+$outDir = $sys->outputDirectory . $separator . 'stylevars' . $separator . 'stylevar_reference';
 
 $separator=DIRECTORY_SEPARATOR;
 $templateTokens=['~title~','~title_slug~','~date~','~group~','~version~','~content~','~weight~'];
@@ -28,11 +32,6 @@ $queries = new QueryDefs();
 
 $stylevarQueries = $queries->getQueries('stylevars');
 
-if (!empty($dbConnect)) {
-    echo "Database Connection Successful\n\r";
-} else {
-    die ('unable to connect');
-}
 
 
 $clean = true;
@@ -44,7 +43,7 @@ $groups = $dbConnect->run_query($stylevarQueries['groups']);
 $itemReplace=[];
 $currentItem='';
 
-$outDir = $sys->outputDirectory . $separator . 'stylevars' . $separator . 'stylevar_reference';
+
 $pageCounter=10;
 foreach ($groups as $group) {
     echo $group['stylevargroup'] . "\n\r";

@@ -17,7 +17,11 @@ $sys = new System("./config/settings.ini", __DIR__);
 $dbConnect = new Database("./config/settings.ini");
 if (!empty($dbConnect)) {
     echo "Database Connection Successful\n\r";
+} else {
+    die ('unable to connect');
 }
+
+$outDir = $sys->outputDirectory . $separator . 'settings' . $separator . 'options';
 
 // Setup Variables for page generation.
 $separator=DIRECTORY_SEPARATOR;
