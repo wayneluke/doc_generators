@@ -6,6 +6,8 @@ These files will automatically generate a series of articles for the vB5Support 
 
 These phrases are combined with other database data and configuration settings to create individual article pages with images and other media as needed. The goal is to provide coherent documentation that can be accessed on any device. Currently all documentation is pulled from the master language and therefore in English. It can be translated in the future. Each article uses Markdown for its formatting. Each generator will automatically create the directory structure and files necessary to properly format the manual's navigation. Templates are utilized for formatting and output so it is easy to update articles with future generations.
 
+> Note: The goal of this project is two fold. 1) Simplify repetitive document generation. 2) To help me relearn programming using classes, templates, and other modern techniques. I doubt this will be the prettiest or most efficient code.
+
 ## Available Generators
 - options.php: Generates an article page for each Setting Group in the system. Inside the page, each setting is documented with examples. Groups and Options will be listed by display value in the manual.
 - stylevars.php: Generates an article page for each Stylevar group in the system. Adds additional text and descriptions along with working examples of how to modify the style vars. Each group will include an image map to highlight where the stylevar has its primary effect.
