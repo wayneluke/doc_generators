@@ -6,6 +6,7 @@
 if (PHP_SAPI != 'cli') { die ('Not Allowed');} 
 
 // Get some important files.
+// Note: I may be able to do this with an Autoload function. Who knows?
 require_once('./includes/system.php');
 require_once('./includes/database.php');
 require_once('./includes/querydef.php');
@@ -14,12 +15,14 @@ require_once('./includes/functions.php');
 
 // Setup System
 $sys = new System("./config/settings.ini", __DIR__);
-$dbConnect = new Database("./config/settings.ini");
-if (!empty($dbConnect)) {
+$db = new Database("./config/settings.ini");
+if (!empty($db)) {
     echo "Database Connection Successful\n\r";
 } else {
     die ('unable to connect');
 }
+
+//--------------------------------------------
 
 $separator=DIRECTORY_SEPARATOR;
 $outDir = $sys->outputDirectory . $separator . 'settings' . $separator . 'options';
@@ -35,12 +38,10 @@ $queries = new QueryDefs();
 $Queries = $queries->getQueries('options');
 
 $clean = true;
-$version = $queries->getVersion($dbConnect);
+$version = $queries->getVersion($db);
 $now=date('Y-m-d h:ia');
 
-// ------------------------------------
-
-$groups = $dbConnect->run_query($Queries['groups']);
+$groups = $db->run_query($Queries['groups']);
 
 $itemReplace=[];
 $currentItem='';
@@ -50,7 +51,7 @@ foreach ($groups as $group) {
         continue;
     }
     echo $group['title'] . "\n\r";
-    $settings = $dbConnect->run_query($Queries['settings'],[$group['grouptitle']]);
+    $settings = $db->run_query($Queries['settings'],[$group['grouptitle']]);
     $content='';
     foreach ($settings as $setting) {
         echo "\t". $setting['title'] ."\n\r";
