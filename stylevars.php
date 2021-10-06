@@ -89,8 +89,8 @@ foreach ($groups as $group) {
         $currentItem = new Template('stylevar');
         $content.=$currentItem->parse($contentTokens,$itemReplace) . "\n";
     }
-    $groupDir = $outDir . $separator . $group['stylevargroup'];
-    createDirectory($groupDir);
+    //$groupDir = $outDir . $separator . $group['stylevargroup'];
+    //createDirectory($groupDir);
     
     $pageCounter +=10;
     if ($group['stylevargroup']==='Global') { 
@@ -104,7 +104,7 @@ foreach ($groups as $group) {
 
     $stylevarPage = new Template('page');
     $page=$stylevarPage->parse($templateTokens,$templateReplace);
-    file_put_contents($groupDir . $separator . 'index.md', $page);
+    file_put_contents($groupDir . $separator . $group['stylevargroup'] . '.md', $page);
 
 }
 

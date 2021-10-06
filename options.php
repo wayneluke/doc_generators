@@ -59,12 +59,12 @@ foreach ($groups as $group) {
         $currentItem = new Template('setting');
         $content.=$currentItem->parse($contentTokens,$itemReplace);
     }
-    $groupDir = $outDir . $separator . $group['grouptitle'];
-    createDirectory($groupDir);
+    //$groupDir = $outDir . $separator . $group['grouptitle'];
+    //createDirectory($groupDir);
     $templateReplace=[$group['title'], slugify($group['title']), $now, $group['grouptitle'], $version, $content, $group['displayorder']];
 
     $settingPage = new Template('page');
     $page=$settingPage->parse($templateTokens,$templateReplace);
-    file_put_contents($groupDir . $separator . 'index.md', $page);
+    file_put_contents($outDir . $separator . $group['grouptitle'] . '.md', $page);
 }
 
