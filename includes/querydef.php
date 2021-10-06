@@ -43,6 +43,17 @@ class QueryDefs {
             'default_value'   => "SELECT value FROM {prefix}stylevar WHERE stylevarid=? AND styleid=-1",
     ];
 
+    protected $userhelp = [
+            'sections'        => "SELECT f.*, p.text AS 'title' FROM {prefix}faq AS f
+                                  LEFT JOIN {prefix}phrase AS p ON (p.varname LIKE CONCAT(f.faqname, '_gfaqtitle'))
+                                  WHERE faqparent = 'faqroot'
+                                  ORDER BY displayorder",
+            'pages'           => "SELECT f.*, p.text as 'title', p2.text as 'text' from {prefix}faq AS f
+                                  LEFT JOIN {prefix}phrase AS p ON (p.varname LIKE CONCAT(f.faqname, '_gfaqtitle'))
+                                  LEFT JOIN {prefix}phrase AS p2 ON (p2.varname LIKE CONCAT(f.faqname,'_gfaqtext'))
+                                  WHERE faqparent = ?",
+    ];
+
     public function getQueries($property) 
     {
         if (property_exists($this, $property)) {
