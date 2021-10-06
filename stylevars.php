@@ -104,7 +104,7 @@ foreach ($groups as $group) {
 
     $stylevarPage = new Template('page');
     $page=$stylevarPage->parse($templateTokens,$templateReplace);
-    file_put_contents($groupDir . $separator . $group['stylevargroup'] . '.md', $page);
+    file_put_contents($outDir . $separator . $group['stylevargroup'] . '.md', $page);
 
 }
 
