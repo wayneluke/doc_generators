@@ -22,7 +22,7 @@ class Database extends PDO
      * @param array $options An array of options sent to PDO.
      */
 
-    private $dbPrefix;
+    private $dbPrefix = '';
 
     public function __construct($file)
     {
